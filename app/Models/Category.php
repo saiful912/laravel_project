@@ -11,6 +11,10 @@ class Category extends Model
 {
     protected $guarded = [];
 
+    public static function select(array $array)
+    {
+    }
+
     protected static function boot()
     {
         parent::boot();

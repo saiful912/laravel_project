@@ -14,6 +14,7 @@ class Product extends Model implements HasMedia
 
     protected $guarded=[];
 
+
 //    static slug data include create
 protected static function boot()
 {

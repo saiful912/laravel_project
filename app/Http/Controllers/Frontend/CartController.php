@@ -80,4 +80,13 @@ class CartController extends Controller
 
         return redirect()->back();
     }
+
+    public function checkout()
+    {
+        $data=[];
+        $data['cart'] = $cart = session()->has('cart') ? session()->get('cart') : [];
+        //sum selected all products by cart
+        $data['total'] = array_sum(array_column($data['cart'], 'total_price'));
+        return view('frontend.checkout',$data);
+    }
 }

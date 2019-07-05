@@ -38,16 +38,9 @@
                         </li>
                 </ul>
 
-                <form class="card p-2">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Promo code">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-secondary">Redeem</button>
-                        </div>
-                    </div>
-                </form>
             </div>
             <div class="col-md-8 order-md-1">
+                @include('frontend.partials._message')
                 <h4 class="mb-3">Billing address</h4>
                 <form class="needs-validation" action="{{route('order')}}" method="post" novalidate>
                     @csrf
@@ -63,7 +56,7 @@
 
                     <div class="mb-3">
                         <label for="phone_number">Customer Phone number</label>
-                        <input type="email" class="form-control" name="customer_phonea_number"
+                        <input type="text" class="form-control" name="customer_phone_number"
                                value="{{auth()->user()->phone_number}}">
                     </div>
 

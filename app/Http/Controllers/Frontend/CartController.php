@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Models\Order;
+use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Notifications\OrderEmailNotification;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -123,15 +125,27 @@ class CartController extends Controller
 
         foreach ($cart as $product_id => $product) {
             $order->products()->create([
-                'product_id'=>$product_id,
-                'quantity'=>$product['quantity'],
-                'price'=>$product['total_price'],
+                'product_id' => $product_id,
+                'quantity' => $product['quantity'],
+                'price' => $product['total_price'],
             ]);
 
         }
+        //user order mail notification fire
+        auth()->user()->notify(new OrderEmailNotification($order,auth()->user()));
 
-        session()->forget(['total','cart']);
+        session()->forget(['total', 'cart']);
+        session()->flash('message','Order placed successfully');
 
-        return redirect('/');
+        return redirect()->route('order.details',$order->id);
+    }
+
+    public function showOrder($id)
+    {
+        $data = [];
+//        all orders and order_products data show details page
+        $data['order'] = Order::findOrFail($id);
+        $data['products'] = OrderProduct::all();
+        return view('frontend.order.details',$data);
     }
 }

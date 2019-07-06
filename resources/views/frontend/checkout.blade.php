@@ -7,14 +7,22 @@
         <hr>
         @guest()
             <div class="alert alert-info">
-                You need to <a href="{{route('login')}}">Login</a> first to complete your order.
+                You need to <a href="{{route('login')}}">
+                    <button class="btn btn-success font-weight-bold">
+                        Login
+                    </button>
+                </a> first to complete your order.If you don't register this site first register now.<a href="{{route('register')}}">
+                    <button class="btn btn-success">
+                        Register
+                    </button>
+                </a>
             </div>
         @else
             <div class="alert alert-info">
                 You are ordering as, {{auth()->user()->name }}
             </div>
         @endguest
-
+@auth
         <div class="row">
             <div class="col-md-4 order-md-2 mb-4">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -84,4 +92,5 @@
             </div>
         </div>
     </div>
+    @endauth
 @stop

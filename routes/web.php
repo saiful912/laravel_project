@@ -41,6 +41,7 @@ Route::group(['namespace'=>'Frontend'],function(){
     Route::group(['middleware'=>'auth'],function(){
 
         Route::post('/order','CartController@order')->name('order');
+        Route::get('/order/{id}','CartController@showOrder')->name('order.details');
 
         Route::get('/profile','AuthController@profile')->name('profile');
         Route::get('/logout','AuthController@logout')->name('logout');

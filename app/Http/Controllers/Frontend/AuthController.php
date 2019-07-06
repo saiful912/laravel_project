@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\Order;
 use App\Models\User;
 use App\Notifications\RegistrationEmailNotification;
 use Carbon\Carbon;
@@ -25,29 +26,29 @@ class AuthController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|min:11|max:15|unique:users,phone_number',
-            'password'  =>'required|min:6'
+            'password' => 'required|min:6'
         ]);
         //error message
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        try{
-           $user= User::create([
-                'name'=>request()->input('name'),
-                'email'=>strtolower(request()->input('email')),
-                'phone_number'=>request()->input('phone_number'),
-                'password'=>bcrypt(request()->input('password')),
-                'email_verification_token'=>uniqid(time(), true).str_random(16),
+        try {
+            $user = User::create([
+                'name' => request()->input('name'),
+                'email' => strtolower(request()->input('email')),
+                'phone_number' => request()->input('phone_number'),
+                'password' => bcrypt(request()->input('password')),
+                'email_verification_token' => uniqid(time(), true) . str_random(16),
             ]);
 
 
 //notification call
 //            $user->notify(new RegistrationEmailNotification($user));
-           $this->setSuccess('Account Registered');
+            $this->setSuccess('Account Registered');
 
             return redirect()->route('login');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->setError($e->getMessage());
 
             return redirect()->back();
@@ -62,7 +63,7 @@ class AuthController extends Controller
     public function processLogin(Request $request)
     {
         $this->validate($request, [
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
         $credentials = $request->except(['_token']);
@@ -71,7 +72,7 @@ class AuthController extends Controller
         }
         $this->setError('Invalid credentials.');
         return redirect()->back();
-    // use by notification login
+        // use by notification login
 //        $validator=Validator::make(request()->all(),[
 //            'email'=>'required|email',
 //            'password'=>'required'
@@ -100,7 +101,7 @@ class AuthController extends Controller
     }
 
 
-        //notification class
+    //notification class
 //    public function mail_activate($token = null)
 //    {
 //        if ($token === null){
@@ -125,5 +126,13 @@ class AuthController extends Controller
         auth()->logout();
 
         return redirect('/');
+    }
+
+    public function profile()
+    {
+        $data = [];
+//user profile
+        $data['orders'] = Order::where('user_id', auth()->user()->id)->get();
+        return view('frontend.auth.profile',$data);
     }
 }
